@@ -57,7 +57,7 @@ sealed class TerminalType {
 
 data class TerminalState(
     val sum: Int = 0,
-    val name: String = "Бронь книги",
+    val serviceName: String = "Бронь книги",
     val isWait: Boolean = true,
     val isFinished: Boolean = false,
     val isSuccessfully: Boolean = false,
@@ -76,14 +76,14 @@ object Strings {
 
 class MainActivity : ComponentActivity() {
     private val books = arrayOf("\"1984\" by George Orwell",
-        "\"To Kill a Mockingbird\" by Harper Lee\n",
-        "\"Pride and Prejudice\" by Jane Austen\n",
-        "\"The Great Gatsby\" by F. Scott Fitzgerald\n",
-        "\"Harry Potter and the Sorcerer's Stone\" by J.K. Rowling\n",
-        "\"The Catcher in the Rye\" by J.D. Salinger\n",
-        "\"The Lord of the Rings\" by J.R.R. Tolkien\n",
-        "\"The Hunger Games\" by Suzanne Collins\n",
-        "\"Crime and Punishment\" by Fyodor Dostoevsky\n",
+        "\"To Kill a Mockingbird\" by Harper Lee",
+        "\"Pride and Prejudice\" by Jane Austen",
+        "\"The Great Gatsby\" by F. Scott Fitzgerald",
+        "\"Harry Potter and the Sorcerer's Stone\" by J.K. Rowling",
+        "\"The Catcher in the Rye\" by J.D. Salinger",
+        "\"The Lord of the Rings\" by J.R.R. Tolkien",
+        "\"The Hunger Games\" by Suzanne Collins",
+        "\"Crime and Punishment\" by Fyodor Dostoevsky",
         " \"The Da Vinci Code\" by Dan Brown")
     private lateinit var nfcAdapter: NfcAdapter
     private lateinit var pendingIntent: PendingIntent
@@ -110,8 +110,8 @@ class MainActivity : ComponentActivity() {
                 val text = remember { mutableStateOf(Strings.tapToPay) }
                 val book = remember { mutableStateOf(books[0]) }
                 val operationDescription = when (state.value.type) {
-                    TerminalType.PaymentTerminal -> "Оплата: \n${state.value.name} - ${state.value.sum}₽"
-                    TerminalType.ServiceTerminal -> "Услуга: \n${state.value.name}"
+                    TerminalType.PaymentTerminal -> "Оплата: \n${state.value.serviceName} - ${state.value.sum}₽"
+                    TerminalType.ServiceTerminal -> "Услуга: \n${state.value.serviceName}"
                 }
 
                 LaunchedEffect(state.value) {
@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
 
                         val response = api.pay(
                             state.value.cardHash!!,
-                            "${operationDescription.lowercase()} $book",
+                            "${state.value.serviceName} ${book.value}",
                             state.value.terminalCode,
                             state.value.sum,
                             state.value.categoryId
